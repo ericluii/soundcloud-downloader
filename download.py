@@ -103,7 +103,7 @@ def prepare_for_download(username):
     if os.path.exists(cache_filename):
         return json.loads(open(cache_filename).read())
     else:
-        return dict()
+        return list()
 
 def download(url, filename):
     response = urllib2.urlopen(url)
