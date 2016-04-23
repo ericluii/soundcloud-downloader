@@ -18,7 +18,14 @@ echo 'Installing Dependencies:'
 echo '- eyeD3'
 echo '========================================='
 
-sudo pip install eyed3
+eyed3 > /dev/null
+rc=$?
+
+if [[ $rc != 0 ]]; then
+  sudo pip install eyed3
+else
+  echo 'eyed3 detected. Skipping Install.'
+fi
 
 echo '========================================='
 echo 'Good to go (:'
