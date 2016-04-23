@@ -2,7 +2,9 @@ import eyed3
 import json
 import os
 import shutil
+import sys
 import time
+import traceback
 import urllib2
 
 # Place your API Key here
@@ -48,6 +50,7 @@ def get_user_likes(username):
     print('Getting likes for user %s' % username)
     print('=========================================')
 
+    global FAILED
     songs = []
     # Pagination offset
     offset = 0
@@ -111,7 +114,11 @@ def download(url, filename):
 
     # Track progress
     meta = response.info()
-    file_size = int(meta.getheaders("Content-Length")[0])
+    if len(meta.getheaders("Content-Length")) > 0:
+        file_size = int(meta.getheaders("Content-Length")[0])
+    else:
+        print('\t\033[93mFile size unknown: Guessing 5mb\033[0m')
+        file_size = 5242880
     print('\tDownloading: %s Size: %s' % (url, file_size))
     print('\tSaving in file: %s' % filename)
 
@@ -140,35 +147,42 @@ def download_songs(songs):
     time.sleep(2)
 
     global CACHE
+    global FAILED
     count = 1
     for song in songs:
         print('[%s/%s]' % (count, len(songs)))
         if song['id'] in CACHE:
             print('Skipping song %s because already downloaded.' % song['title'])
             print('If you think is is a mistake, remove the number')
-            print('%s from the cache file.\n' % song['id'])
+            print('\033[92m%s\033[0m from the cache file.\n' % song['id'])
             count += 1
             continue
 
         print('Processing song %s by %s\n' %(song['title'], song['artist']))
-        mp3 = TMP_FOLDER + str(song['id']) + '.mp3'
-        artwork = TMP_FOLDER + str(song['id']) + '.jpg'
+        try:
+            mp3 = TMP_FOLDER + str(song['id']) + '.mp3'
+            artwork = TMP_FOLDER + str(song['id']) + '.jpg'
 
-        download(song['stream_url'], mp3)
-        download(song['artwork_url'], artwork)
-        print('\tUpdating metadata...')
-        audio_fh = eyed3.load(mp3)
-        audio_fh.initTag()
-        audio_fh.tag.artist = song['artist']
-        audio_fh.tag.title = song['title']
-        audio_fh.tag.track_num = song['id']
-        audio_fh.tag.images.set(3, open(artwork).read(), 'image/jpeg')
-        audio_fh.tag.save()
+            download(song['stream_url'], mp3)
+            download(song['artwork_url'], artwork)
+            print('\tUpdating metadata...')
+            audio_fh = eyed3.load(mp3)
+            audio_fh.initTag()
+            audio_fh.tag.artist = song['artist']
+            audio_fh.tag.title = song['title']
+            audio_fh.tag.track_num = song['id']
+            audio_fh.tag.images.set(3, open(artwork).read(), 'image/jpeg')
+            audio_fh.tag.save()
 
-        print('\tMoving downloaded song...\n')
-        os.rename(mp3, FOLDER + song['title'] + '.mp3')
-        CACHE.append(song['id'])
-
+            print('\tMoving downloaded song...\n')
+            os.rename(mp3, FOLDER + song['title'] + '.mp3')
+            CACHE.append(song['id'])
+        except:
+            traceback.print_exc(file=sys.stdout)
+            print('\033[91mFailed to download song. Something went wrong ):')
+            print('If youre a dev and you think you can check what happend, I would love you forever')
+            print('Else, report to me the exact song and I can try to look into it.\033[0m')
+            FAILED.append(song['permalink_url'])
         count += 1
 
 def clean_up(username):
@@ -182,6 +196,10 @@ def clean_up(username):
     cache_fh = open('%s%s_cache.json' % (CACHE_FOLDER, username), 'wb')
     json.dump(CACHE, cache_fh)
     cache_fh.close()
+
+    print('\nNote: Failed to download %s songs.' % len(FAILED))
+    for song in FAILED:
+        print(song)
 
 def main():
     print('Please your soundcloud username: ')
