@@ -2,7 +2,10 @@
 
 This script was written to be used on __MAC OS X__. Feel free to modify the script to work for your use case.
 
-In order to use the script, first run the file install.sh
+In order to use the script, first run the file
+
+    chmod u+x install.sh
+    install.sh
 
 The second thing you must do is find an API key and place it in the download.py folder. The spot it should be placed can be find by searching for the text __YOUR_API_KEY_HERE__
 
