@@ -183,6 +183,8 @@ def download_songs(songs):
             print('If youre a dev and you think you can check what happend, I would love you forever')
             print('Else, report to me the exact song and I can try to look into it.\033[0m')
             FAILED.append(song['permalink_url'])
+            # Allow user to see error message
+            time.sleep(3)
         count += 1
 
 def clean_up(username):
