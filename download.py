@@ -211,7 +211,7 @@ def main():
         print('If no, songs will be placed in your downloads folder.')
         FOLDER = raw_input()
         if FOLDER == 'yes':
-            FOLDER = '~/Music/iTunes Media/Automatically Add to iTunes/'
+            FOLDER = os.path.expanduser('~/Music/iTunes Media/Automatically Add to iTunes/')
         elif FOLDER != 'no':
             print('Please answer with yes/no')
             return -1;
