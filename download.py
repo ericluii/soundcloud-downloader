@@ -9,7 +9,7 @@ import urllib2
 
 # Place your API Key here
 # This can be found at https://developers.soundcloud.com
-API_KEY = '?client_id=02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea'
+API_KEY = '?client_id=02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea&app_version=1461312517'
 RATE_LIMIT = 50
 API_HOST = 'https://api.soundcloud.com'
 
@@ -73,19 +73,13 @@ def get_user_likes(username):
 
         for favourite in favourites:
             if favourite['kind'] == 'track':
-                if favourite['streamable']:
-                    song = dict()
-                    song['id'] = favourite['id']
-                    song['title'] = favourite['title']
-                    song['artist'] = favourite['user']['username']
-                    song['artwork_url'] = favourite['artwork_url']
-                    song['stream_url'] = favourite['stream_url'] + API_KEY
-                    song['permalink_url'] = favourite['permalink_url']
-                    songs.append(song)
-                else:
-                    # Song can't be streamed so we can't download
-                    # it this way.
-                    FAILED.append(favourite['permalink_url'])
+                song = dict()
+                song['id'] = favourite['id']
+                song['title'] = favourite['title']
+                song['artist'] = favourite['user']['username']
+                song['artwork_url'] = favourite['artwork_url']
+                song['permalink_url'] = favourite['permalink_url']
+                songs.append(song)
 
         offset += len(favourites)
         print('Retrieved metadata on %d out of %d songs.' % (
@@ -163,7 +157,8 @@ def download_songs(songs):
             mp3 = TMP_FOLDER + str(song['id']) + '.mp3'
             artwork = TMP_FOLDER + str(song['id']) + '.jpg'
 
-            download(song['stream_url'], mp3)
+            dl_link = "http://api.soundcloud.com/tracks/%s/stream%s" % (song['id'], API_KEY)
+            download(dl_link, mp3)
             print('\tUpdating metadata...')
             audio_fh = eyed3.load(mp3)
             audio_fh.initTag()
