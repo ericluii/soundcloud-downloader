@@ -7,11 +7,9 @@ import time
 import traceback
 import urllib2
 
-# Place your API Key here
-# This can be found at https://developers.soundcloud.com
-API_KEY = '?client_id=02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea&app_version=1461312517'
 RATE_LIMIT = 50
 API_HOST = 'https://api.soundcloud.com'
+PARAMS = '?client_id=02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea&app_version=1461312517'
 
 # Download files
 CUR_DIR = os.getcwd()
@@ -26,7 +24,7 @@ FAILED = list()
 # Check to see if the user is a valid
 # soundcloud user
 def is_valid_user(username):
-    endpoint = "%s/users/%s%s" % (API_HOST, username, API_KEY)
+    endpoint = "%s/users/%s%s" % (API_HOST, username, PARAMS)
     try:
         response = urllib2.urlopen(endpoint)
     except urllib2.HTTPError:
@@ -60,7 +58,7 @@ def get_user_likes(username):
         endpoint = "%s/users/%s/favorites%s&limit=%d&offset=%d" % (
             API_HOST,
             username,
-            API_KEY,
+            PARAMS,
             RATE_LIMIT,
             offset
         )
@@ -157,7 +155,7 @@ def download_songs(songs):
             mp3 = TMP_FOLDER + str(song['id']) + '.mp3'
             artwork = TMP_FOLDER + str(song['id']) + '.jpg'
 
-            dl_link = "http://api.soundcloud.com/tracks/%s/stream%s" % (song['id'], API_KEY)
+            dl_link = "http://api.soundcloud.com/tracks/%s/stream%s" % (song['id'], PARAMS)
             download(dl_link, mp3)
             print('\tUpdating metadata...')
             audio_fh = eyed3.load(mp3)
