@@ -158,26 +158,30 @@ def download_songs(songs):
             count += 1
             continue
 
-        print('Processing song %s by %s\n' %(song['title'], song['artist']))
+        print('Processing song %s by %s\n%s\n' %(song['title'], song['artist'], song['permalink_url']))
         try:
             mp3 = TMP_FOLDER + str(song['id']) + '.mp3'
             artwork = TMP_FOLDER + str(song['id']) + '.jpg'
 
             download(song['stream_url'], mp3)
-            download(song['artwork_url'], artwork)
             print('\tUpdating metadata...')
             audio_fh = eyed3.load(mp3)
             audio_fh.initTag()
             audio_fh.tag.artist = song['artist']
             audio_fh.tag.title = song['title']
             audio_fh.tag.track_num = song['id']
-            audio_fh.tag.images.set(3, open(artwork).read(), 'image/jpeg')
+            if song['artwork_url']:
+                print('\tUpdating album art...')
+                download(song['artwork_url'], artwork)
+                audio_fh.tag.images.set(3, open(artwork).read(), 'image/jpeg')
             audio_fh.tag.save()
 
-            print('\tMoving downloaded song...\n')
-            os.rename(mp3, FOLDER + song['title'] + '.mp3')
+            dest = FOLDER + song['title'].replace('/', '_') + '.mp3'
+            print('\tMoving downloaded song to %s...\n' % dest)
+            shutil.move(mp3, dest)
             CACHE.append(song['id'])
         except:
+            print('\033[93m')
             traceback.print_exc(file=sys.stdout)
             print('\033[91mFailed to download song. Something went wrong ):')
             print('If youre a dev and you think you can check what happend, I would love you forever')
