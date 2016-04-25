@@ -7,9 +7,7 @@ In order to use the script, first run the file
     chmod u+x install.sh
     install.sh
 
-The second thing you must do is find an API key and place it in the download.py folder. The spot it should be placed can be find by searching for the text __YOUR_API_KEY_HERE__
-
-After the dependencies have been installed, and you have your API key, you may then run this script.
+After the dependencies have been installed, you may then run this script.
 
     python download.py
 

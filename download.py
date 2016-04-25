@@ -9,7 +9,7 @@ import urllib2
 
 # Place your API Key here
 # This can be found at https://developers.soundcloud.com
-API_KEY = '?client_id=YOUR_API_KEY_HERE'
+API_KEY = '?client_id=02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea'
 RATE_LIMIT = 50
 API_HOST = 'https://api.soundcloud.com'
 
