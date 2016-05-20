@@ -15,7 +15,7 @@ PARAMS = '?client_id=02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea&app_version=1461312517'
 CUR_DIR = os.getcwd()
 TMP_FOLDER = CUR_DIR + '/TMP_SDL/'
 CACHE_FOLDER = CUR_DIR + '/download_cache/'
-FOLDER = os.path.expanduser('~/Downloads/')
+FOLDER = ''
 
 CACHE = list()
 # Songs that failed to download using script
@@ -214,7 +214,9 @@ def main():
         FOLDER = raw_input()
         if FOLDER == 'yes':
             FOLDER = os.path.expanduser('~/Music/iTunes/iTunes Media/Automatically Add to iTunes.localized/')
-        elif FOLDER != 'no':
+        elif FOLDER == 'no':
+            FOLDER = os.path.expanduser('~/Downloads/')
+        else:
             print('Please answer with yes/no')
             return -1;
 
