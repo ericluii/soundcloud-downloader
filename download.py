@@ -201,6 +201,9 @@ def clean_up(username):
         print(song)
 
 def main():
+    global CACHE
+    global FOLDER
+
     print('Please your soundcloud username: ')
     username = raw_input()
 
@@ -210,12 +213,11 @@ def main():
         print('If no, songs will be placed in your downloads folder.')
         FOLDER = raw_input()
         if FOLDER == 'yes':
-            FOLDER = os.path.expanduser('~/Music/iTunes Media/Automatically Add to iTunes/')
+            FOLDER = os.path.expanduser('~/Music/iTunes/iTunes Media/Automatically Add to iTunes.localized/')
         elif FOLDER != 'no':
             print('Please answer with yes/no')
             return -1;
 
-        global CACHE
         CACHE = prepare_for_download(username)
         songs = get_user_likes(username)
         download_songs(songs)
