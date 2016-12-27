@@ -9,7 +9,7 @@ import urllib2
 
 RATE_LIMIT = 50
 API_HOST = 'https://api.soundcloud.com'
-PARAMS = '?client_id=02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea&app_version=1461312517'
+PARAMS = '?client_id=fDoItMDbsbZz8dY16ZzARCZmzgHBPotA&app_version=1480607078'
 
 # Download files
 CUR_DIR = os.getcwd()
